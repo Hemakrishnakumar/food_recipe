@@ -7,12 +7,17 @@ const RecipeContext = ({ children }) => {
   const [loading, setIsLoading] = useState(false);
   const [recipeList, setRecipeList] = useState([]);
   const [recipeDetails, setRecipeDetails] = useState(null);
-  const [favorites, setFavorites] = useState([]);
+  const [isSearched, setIsSearched] = useState(false);
+  const [favorites, setFavorites] = useState(() => {
+    const data = JSON.parse(localStorage.getItem("favorites"));
+    return data || [];
+  });
 
   useEffect(() => {
     const controller = new AbortController();
     if (!searchParam || searchParam.length < 3) return;
     fetchRecipes();
+
     async function fetchRecipes() {
       setIsLoading(true);
       setRecipeList([]);
@@ -35,6 +40,7 @@ const RecipeContext = ({ children }) => {
         console.log(err);
       } finally {
         setIsLoading(false);
+        setIsSearched(true);
       }
     }
     return function () {
@@ -62,14 +68,15 @@ const RecipeContext = ({ children }) => {
   }
 
   function addToFavorites(item) {
-    console.log("adding to fvrt");
-    setFavorites([...favorites, item]);
+    const newArr = [...favorites, item];
+    setFavorites(newArr);
+    localStorage.setItem("favorites", JSON.stringify(newArr));
   }
 
   function deleteFromFavorites(id) {
-    console.log("deleting....");
     const newArr = favorites?.filter((item) => item.id !== id);
     setFavorites(newArr);
+    localStorage.setItem("favorites", JSON.stringify(newArr));
   }
 
   return (
@@ -80,6 +87,7 @@ const RecipeContext = ({ children }) => {
         loading,
         setSearchParam,
         getRecipeDetails,
+        isSearched,
         recipeDetails,
         favorites,
         addToFavorites,

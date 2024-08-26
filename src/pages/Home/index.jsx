@@ -3,7 +3,7 @@ import RecipeItem from "../../components/RecipeItem";
 import Spinner from "../../components/Spinner";
 
 const Home = () => {
-  const { loading, recipeList } = useRecipeContext();
+  const { loading, recipeList, isSearched } = useRecipeContext();
 
   return (
     <div className="py-8 container mx-auto flex flex-wrap justify-center gap-10">
@@ -14,7 +14,9 @@ const Home = () => {
         ) : (
           <div>
             <p className="lg:text-4xl text-xl text-center text-black font-extrabold">
-              No results found. try something else
+              {isSearched
+                ? "No results found. try something else"
+                : "Search Yummy recipes😋"}
             </p>
           </div>
         ))}
