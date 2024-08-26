@@ -11,7 +11,7 @@ const RecipeContext = ({ children }) => {
 
   useEffect(() => {
     const controller = new AbortController();
-    if (!searchParam) return;
+    if (!searchParam || searchParam.length < 3) return;
     fetchRecipes();
     async function fetchRecipes() {
       setIsLoading(true);
@@ -51,6 +51,7 @@ const RecipeContext = ({ children }) => {
       );
       const data = await res.json();
       if (data?.data?.recipe) {
+        console.log(data);
         setRecipeDetails(data.data.recipe);
       }
     } catch (err) {
@@ -61,11 +62,13 @@ const RecipeContext = ({ children }) => {
   }
 
   function addToFavorites(item) {
+    console.log("adding to fvrt");
     setFavorites([...favorites, item]);
   }
 
   function deleteFromFavorites(id) {
-    const newArr = favorites.filter((item) => item.id !== id);
+    console.log("deleting....");
+    const newArr = favorites?.filter((item) => item.id !== id);
     setFavorites(newArr);
   }
 

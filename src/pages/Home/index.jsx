@@ -1,12 +1,13 @@
 import { useRecipeContext } from "../../context/RecipeContext";
 import RecipeItem from "../../components/RecipeItem";
+import Spinner from "../../components/Spinner";
 
 const Home = () => {
   const { loading, recipeList } = useRecipeContext();
 
   return (
     <div className="py-8 container mx-auto flex flex-wrap justify-center gap-10">
-      {loading && <h1>Loading...</h1>}
+      {loading && <Spinner />}
       {!loading &&
         (recipeList.length ? (
           recipeList.map((item) => <RecipeItem item={item} key={item.id} />)

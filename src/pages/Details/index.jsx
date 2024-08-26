@@ -1,16 +1,23 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useRecipeContext } from "../../context/RecipeContext";
+import Spinner from "../../components/Spinner";
 
 const Details = () => {
-  const { id, recipeDetails } = useParams();
-  const { getRecipeDetails, addToFavorites, favorites, deleteFromFavorites } =
-    useRecipeContext();
+  const { id } = useParams();
+  let {
+    loading,
+    getRecipeDetails,
+    addToFavorites,
+    favorites,
+    deleteFromFavorites,
+    recipeDetails,
+  } = useRecipeContext();
   const isFavorite = favorites?.some((item) => item.id === id);
 
   useEffect(() => {
     getRecipeDetails(id);
-  }, [id, getRecipeDetails]);
+  }, [id]);
 
   function handleSave() {
     if (isFavorite) deleteFromFavorites(id);
@@ -24,8 +31,21 @@ const Details = () => {
       addToFavorites(item);
     }
   }
+  if (loading)
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Spinner />
+      </div>
+    );
+
   return (
-    <div className="container mx-auto py-10 grid grid-cols-1 lg:grid-cols-2 gap:10">
+    <div className="container mx-auto py-10 grid grid-cols-1 lg:grid-cols-2 gap-10">
       <div className="row-start-2 lg:row-start-auto">
         <div className="h-96 overflow-hidden rounded-xl group">
           <img
@@ -45,23 +65,25 @@ const Details = () => {
         <div>
           <button
             onClick={handleSave}
-            className="p-3 px-8 rounded-lg text-sm uppercase font-medium tracking-wider mt-3 inline-block shadow-md bg-black text-white"
+            className="p-3 px-8 rounded-lg text-sm uppercase font-medium tracking-wider mt-3 inline-block shadow-md bg-orange-600 text-white"
           >
-            {isFavorite ? "Remove from favorites" : "Save as favorite"}
+            {isFavorite ? "Remove from favorites" : "Add to favorites"}
           </button>
         </div>
         <div>
-          <span className="text-2xl font-semibold text-black">
+          <span className="text-2xl font-semibold text-black mb-5">
             Ingredients:
           </span>
           <ul className="flex flex-col gap-3">
             {recipeDetails?.ingredients.map((item) => (
-              <li key={item}>
-                <span className="text-2xl font-semibold text-black">
+              <li key={item.description}>
+                <span className="text-2xl text-black">
                   {item.quantity} {item.unit}
                 </span>
-                <span className="text-2xl font-semibold text-black">
-                  {item.description}
+                <span className="text-2xl text-black">
+                  {" "}
+                  {item.description[0].toUpperCase() +
+                    item.description.slice(1)}
                 </span>
               </li>
             ))}
