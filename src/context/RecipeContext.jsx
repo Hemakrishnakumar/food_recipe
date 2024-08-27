@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const FoodRecipeContext = createContext();
 
@@ -8,6 +9,7 @@ const RecipeContext = ({ children }) => {
   const [recipeList, setRecipeList] = useState([]);
   const [recipeDetails, setRecipeDetails] = useState(null);
   const [isSearched, setIsSearched] = useState(false);
+  const navigate = useNavigate();
   const [favorites, setFavorites] = useState(() => {
     const data = JSON.parse(localStorage.getItem("favorites"));
     return data || [];
@@ -33,6 +35,7 @@ const RecipeContext = ({ children }) => {
           throw new Error("something went wrong while fetching the movies");
         const data = await res.json();
         if (data.results > 0) {
+          navigate("/");
           setRecipeList(data.data?.recipes);
           setSearchParam("");
         }
